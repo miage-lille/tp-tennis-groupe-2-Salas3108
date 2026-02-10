@@ -36,4 +36,40 @@ export const game = (winner: Player): Game => ({
   player: winner,
 });
 
-export type Score = Points | Game;
+export type Deuce = {
+  kind: 'DEUCE';
+};
+
+export const deuce = (): Deuce => ({
+  kind: 'DEUCE',
+});
+
+export type FortyData = {
+  player: Player; // The player who has forty
+  otherPoint: Point; // Points of the other player
+};
+
+export type Forty = {
+  kind: 'FORTY';
+  fortyData: FortyData;
+};
+
+export const forty = (player: Player, otherPoint: Point): Forty => ({
+  kind: 'FORTY',
+  fortyData: {
+    player,
+    otherPoint,
+  },
+});
+
+export type Advantage = {
+  kind: 'ADVANTAGE';
+  player: Player;
+};
+
+export const advantage = (player: Player): Advantage => ({
+  kind: 'ADVANTAGE',
+  player,
+});
+
+export type Score = Points | Game | Deuce | Forty | Advantage;
