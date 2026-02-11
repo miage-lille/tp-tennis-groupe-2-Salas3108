@@ -12,6 +12,18 @@ import {
 } from './types/score';
 import { pipe, Option } from 'effect'
 
+export {
+  points,
+  deuce,
+  forty,
+  advantage,
+  game,
+  type Point,
+  type PointsData,
+  type FortyData,
+  type Score,
+} from './types/score';
+
 // -------- Tooling functions --------- //
 
 export const playerToString = (player: Player) => {
@@ -115,10 +127,8 @@ export const scoreWhenForty = (
 // Tip: You can use pipe function from Effect to improve readability.
 // See scoreWhenForty function above.
 export const scoreWhenPoint = (current: PointsData, winner: Player): Score => {
-  const winnerKey = winner;
-  const other = otherPlayer(winner);
-  const winnerPoints = current[winnerKey];
-  const otherPoints = current[other];
+  const winnerPoints = winner === 'PLAYER_ONE' ? current.PLAYER_ONE : current.PLAYER_TWO;
+  const otherPoints = winner === 'PLAYER_ONE' ? current.PLAYER_TWO : current.PLAYER_ONE;
 
   if (winnerPoints === 30) {
     // winner goes to forty
@@ -127,7 +137,7 @@ export const scoreWhenPoint = (current: PointsData, winner: Player): Score => {
 
   const nextPoint = winnerPoints === 0 ? 15 : winnerPoints === 15 ? 30 : winnerPoints;
 
-  if (winnerKey === 'PLAYER_ONE') {
+  if (winner === 'PLAYER_ONE') {
     return points(nextPoint, otherPoints);
   }
   return points(otherPoints, nextPoint);
