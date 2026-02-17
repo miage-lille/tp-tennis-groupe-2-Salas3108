@@ -10,6 +10,9 @@ import {
   deuce,
   game,
   forty,
+  points,
+  pointToString,
+  scoreToString,
 } from '..';
 import type { Player } from '../types/player';
 import type { PointsData } from '../types/score';
@@ -21,6 +24,37 @@ describe('Tests for tooling functions', () => {
 
   test('Given playerOne when otherPlayer', () => {
     expect(otherPlayer('PLAYER_ONE')).toStrictEqual('PLAYER_TWO');
+  });
+
+  test('pointToString returns expected labels', () => {
+    expect(pointToString(0 as any)).toBe('Love');
+    expect(pointToString(15 as any)).toBe('15');
+    expect(pointToString(30 as any)).toBe('30');
+    expect(pointToString(40 as any)).toBe('40');
+  });
+
+  test('scoreToString formats scores correctly', () => {
+    expect(scoreToString(points(0 as any, 0 as any))).toBe('Love - Love');
+    expect(scoreToString(points(15 as any, 30 as any))).toBe('15 - 30');
+    expect(scoreToString(deuce())).toBe('Deuce');
+    expect(scoreToString(advantage('PLAYER_ONE'))).toBe('Advantage Player 1');
+    expect(scoreToString(game('PLAYER_TWO'))).toBe('Game Player 2');
+    expect(scoreToString(forty('PLAYER_ONE', 15 as any))).toBe('40 (Player 1) - 15');
+  });
+
+  test('Given deuce when scoreToString is called, it returns "Deuce"', () => {
+    const result = scoreToString(deuce());
+    expect(result).toBe('Deuce');
+  });
+
+  test('Given advantage for PLAYER_ONE when scoreToString is called, it returns "Advantage Player 1"', () => {
+    const result = scoreToString(advantage('PLAYER_ONE'));
+    expect(result).toBe('Advantage Player 1');
+  });
+
+  test('Given game for PLAYER_TWO when scoreToString is called, it returns "Game Player 2"', () => {
+    const result = scoreToString(game('PLAYER_TWO'));
+    expect(result).toBe('Game Player 2');
   });
 });
 
