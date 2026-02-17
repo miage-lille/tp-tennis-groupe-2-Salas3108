@@ -1,5 +1,16 @@
 import { describe, expect, test } from '@jest/globals';
-import { otherPlayer, playerToString, scoreWhenPoint } from '..';
+import {
+  otherPlayer,
+  playerToString,
+  scoreWhenPoint,
+  scoreWhenDeuce,
+  scoreWhenAdvantage,
+  scoreWhenForty,
+  advantage,
+  deuce,
+  game,
+  forty,
+} from '..';
 import type { Player } from '../types/player';
 import type { PointsData } from '../types/score';
 
@@ -15,23 +26,63 @@ describe('Tests for tooling functions', () => {
 
 describe('Tests for transition functions', () => {
   test('Given deuce, score is advantage to winner', () => {
-     console.log('To fill when we will know how represent Deuce');
-   });
-   test('Given advantage when advantagedPlayer wins, score is Game avantagedPlayer', () => {
-     console.log('To fill when we will know how represent Advantage');
-   });
-   test('Given advantage when otherPlayer wins, score is Deuce', () => {
-     console.log('To fill when we will know how represent Advantage');
-   });
-   test('Given a player at 40 when the same player wins, score is Game for this player', () => {
-     console.log('To fill when we will know how represent Forty');
-   });
-   test('Given player at 40 and other at 30 when other wins, score is Deuce', () => {
-     console.log('To fill when we will know how represent Forty');
-   });
-   test('Given player at 40 and other at 15 when other wins, score is 40 - 15', () => {
-     console.log('To fill when we will know how represent Forty');
-   });
+    (['PLAYER_ONE', 'PLAYER_TWO'] as const).forEach((w) => {
+      const winner = w;
+      const score = scoreWhenDeuce(winner as any);
+      const expected = advantage(winner as any);
+      expect(score).toStrictEqual(expected);
+    });
+  });
+
+  test('Given advantage when advantagedPlayer wins, score is Game avantagedPlayer', () => {
+    (['PLAYER_ONE', 'PLAYER_TWO'] as const).forEach((adv) => {
+      const advantagedPlayer = adv as any;
+      const winner = advantagedPlayer;
+      const score = scoreWhenAdvantage(advantagedPlayer, winner);
+      const expected = game(winner);
+      expect(score).toStrictEqual(expected);
+    });
+  });
+
+  test('Given advantage when otherPlayer wins, score is Deuce', () => {
+    (['PLAYER_ONE', 'PLAYER_TWO'] as const).forEach((adv) => {
+      const advantagedPlayer = adv as any;
+      const winner = otherPlayer(advantagedPlayer as any);
+      const score = scoreWhenAdvantage(advantagedPlayer, winner as any);
+      const expected = deuce();
+      expect(score).toStrictEqual(expected);
+    });
+  });
+
+  test('Given a player at 40 when the same player wins, score is Game for this player', () => {
+    (['PLAYER_ONE', 'PLAYER_TWO'] as const).forEach((w) => {
+      const winner = w as any;
+      const fortyData = { player: winner, otherPoint: 30 } as any;
+      const score = scoreWhenForty(fortyData, winner);
+      const expected = game(winner as any);
+      expect(score).toStrictEqual(expected);
+    });
+  });
+
+  test('Given player at 40 and other at 30 when other wins, score is Deuce', () => {
+    (['PLAYER_ONE', 'PLAYER_TWO'] as const).forEach((w) => {
+      const winner = w as any;
+      const fortyData = { player: otherPlayer(winner), otherPoint: 30 } as any;
+      const score = scoreWhenForty(fortyData, winner);
+      const expected = deuce();
+      expect(score).toStrictEqual(expected);
+    });
+  });
+
+  test('Given player at 40 and other at 15 when other wins, score is 40 - 30', () => {
+    (['PLAYER_ONE', 'PLAYER_TWO'] as const).forEach((w) => {
+      const winner = w as any;
+      const fortyData = { player: otherPlayer(winner), otherPoint: 15 } as any;
+      const score = scoreWhenForty(fortyData, winner);
+      const expected = forty(fortyData.player, 30 as any);
+      expect(score).toStrictEqual(expected);
+    });
+  });
   // -------------------------TESTS POINTS-------------------------- //
   test('Given players at 0 or 15 points score kind is still POINTS', () => {
     (['PLAYER_ONE', 'PLAYER_TWO'] as const).forEach((winner: Player) => {
